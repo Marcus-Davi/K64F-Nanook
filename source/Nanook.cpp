@@ -52,6 +52,15 @@
 
 #include "Quaternion.h"
 
+void Quaternion::Print(){
+	PRINTF("%f %f %f %f\r\n",w,v.x,v.y,v.z);
+}
+
+void Vec3::Print(){
+	PRINTF("%f %f %f\r\n",x,y,z);
+}
+
+
 /* TODO: insert other definitions and declarations here. */
 
 /*
@@ -79,6 +88,7 @@ GY80 GY;
 IMU Imu(&GY);
 
 
+
 int main(void) {
 
     //Interrupt Handles (GAMBIARRA?)
@@ -97,11 +107,10 @@ int main(void) {
     BOARD_InitDebugConsole();
 
 
-    Commands::SetUart(&BT_Uart);
+    Commands::SetUart(&USB_Uart); //BT_UART!
     Commands::SetMotor(&Motor);
     Commands::SetGPS(&Gps);
     Commands::SetIMU(&Imu);
-
 
 
     if(GY.Init() == false)
