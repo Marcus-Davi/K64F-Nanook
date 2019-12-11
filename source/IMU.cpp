@@ -41,6 +41,7 @@ void IMU::GetInertial(){
 }
 
 void IMU::GetInertialRaw(){
+	if(Sensor->isDeviceConnected())
 	Sensor->ReadAll();
 	IAcc.X = Sensor->Imu.Acc.X;
 	IAcc.Y = Sensor->Imu.Acc.Y;

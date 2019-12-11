@@ -66,6 +66,7 @@ GY80::GY80() {
 
 bool GY80::Init(){
 	uint8_t rx = 0;
+	DeviceConnected = false;
 		I2CRead(ACC_ADDR, GY_ACC_WHOAMI, &rx, 1);
 		if(rx != 0b11100101)
 			return false;
@@ -116,7 +117,7 @@ bool GY80::Init(){
 	//	tx = 0b00000000; //Single-Measure (up to 160Hz)
 	//	GY_I2C_WRITE(GY_DEVICE_MAGN, GY_MAG_MODE_REG, &tx, 1);
 		/*READY! */
-
+		DeviceConnected = true;
 
 		return true;
 }
@@ -189,5 +190,9 @@ void GY80::ReadAll(){
 	ReadAcc();
 	ReadMag();
 	ReadGyr();
+}
+
+bool GY80::isDeviceConnected(){
+	return DeviceConnected;
 }
 

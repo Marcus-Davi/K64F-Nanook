@@ -100,6 +100,7 @@ void MotorController::LoopPID(){
 	e_e_k1 = e_e;
 }
 
+//Vel em RPM
 void MotorController::ComputeSpeed(){
 	float deltaR = GetRightDelta();
 	float deltaL = GetLeftDelta();

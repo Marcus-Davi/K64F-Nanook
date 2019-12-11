@@ -112,11 +112,19 @@ int main(void) {
     Commands::SetGPS(&Gps);
     Commands::SetIMU(&Imu);
 
+    USB_UART_PTR->SendString((const uint8_t*)"K64F Ready!\r\n");
 
-    if(GY.Init() == false)
+
+    if(GY.Init() == false){
     LED_RED_ON();
- 	else
+    }
+ 	else{
  	LED_GREEN_ON();
+ 	}
+
+    delay_us(200000);
+    LED_GREEN_OFF();
+    LED_RED_OFF();
 
 
 

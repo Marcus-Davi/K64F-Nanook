@@ -82,6 +82,7 @@ private:
 	bool WaitGyrDataReady();
 	bool WaitAccDataReady();
 	bool WaitMagDataReady();
+	bool DeviceConnected = false;
 
 
 public:
@@ -92,6 +93,7 @@ public:
 	void ReadGyr();
 	void ReadMag();
 	void ReadAll();
+	bool isDeviceConnected();
 
 	void AutoCalibrateMag();
 
