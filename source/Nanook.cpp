@@ -112,7 +112,7 @@ int main(void) {
     Commands::SetGPS(&Gps);
     Commands::SetIMU(&Imu);
 
-    USB_UART_PTR->SendString((const uint8_t*)"K64F Ready!\r\n");
+//    USB_UART_PTR->SendString((const uint8_t*)"K64F Ready!\r\n");
 
 
     if(GY.Init() == false){
@@ -128,26 +128,27 @@ int main(void) {
 
 
 
-    Gps.SetMode(GPS::GLL_MODE);
+//    Gps.SetMode(GPS::GLL_MODE);
     Motor.SetMode(MotorController::StopMotor);
     Motor.SetMode(MotorController::ClosedLoop);
 
     while(1){
 
-    	Commands::Parse();//verifica o buffer por comandos BLUETOOTH
+    	if( Commands::Parse() )//verifica o buffer por comandos BLUETOOTH
+    	LED_GREEN_TOGGLE();
 
-    	if(Gps.WaitData() == true){
+//    	if(Gps.WaitData() == true){
 //    		sprintf(string,(char*)GPS_Uart.GetBuffer());
-
-    		if(Gps.GetLatLong() == true){
+//
+//    		if(Gps.GetLatLong() == true){
 //    			x = Gps.GetX();
 //    			y = Gps.GetY();
 //    			sprintf(string,"x = %f y = %f\n\r",x,y);
-
-    	}
+//
+//    	}
 //       		BT_Uart.SendString((uint8_t*)string);
 //       		PRINTF("%s",string);
-    }
+//    }
     }
 
     return 0;

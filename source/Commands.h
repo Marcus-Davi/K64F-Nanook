@@ -49,16 +49,17 @@ public:
 	}
 
 	//funciona bem a 1.75+ KHz !
-	static void Parse(){
+	static bool Parse(){
 		static char buffer_out[200];
 		char* Pt;
 		int k;
+		bool valid = false;
 		static uint8_t* Buffer = UART->GetBuffer();
 
 		//Please make sure terminator is asserted.
 
 		if(strchr((char*)Buffer,'\r')==0)
-			return; //sem token
+			return valid; //sem token
 
 		for(k=0;k<N_Commands;k++){
 			Pt = strstr((char*)Buffer,CMDS[k]);
@@ -79,7 +80,7 @@ public:
 					Imu->IGyr.X,Imu->IGyr.Y,Imu->IGyr.Z,
 					Imu->IMag.X,Imu->IMag.Y,Imu->IMag.Z,vd,ve,x,y);
 			UART->SendString((uint8_t*)buffer_out);
-
+			valid = true;
 			break;
 		}
 
@@ -90,11 +91,13 @@ public:
 					Imu->IGyr.X,Imu->IGyr.Y,Imu->IGyr.Z,
 					Imu->IMag.X,Imu->IMag.Y,Imu->IMag.Z);
 			UART->SendString((uint8_t*)buffer_out);
+			valid = true;
 			break;
 		case 2:{ // A?
 			float angle = atan2(-Imu->IMag.Y +103 ,Imu->IMag.X+161);
 			sprintf(buffer_out,"%f",angle);
 			UART->SendString((uint8_t*)buffer_out);
+			valid = true;
 			break;
 
 		}
@@ -105,6 +108,7 @@ public:
 			token = strchr((char*)Buffer, (char)','); //procura a virgula
 			Ve = (atoi((char*) ++token));
 			Motor->SetSpeedReference((float) Vd, (float)Ve);
+			valid = true;
 			break;
 
 		}
@@ -113,7 +117,7 @@ public:
 			float ve = Motor->GetSpeed(MotorController::LeftMotor);
 			sprintf(buffer_out,"%f %f\r",vd,ve);
 			UART->SendString((uint8_t*)buffer_out);
-
+			valid = true;
 		//	return VELOCITY_QUERY;
 			break;
 		}
@@ -123,9 +127,11 @@ public:
 			float longitude = Gps->GetLongitude();
 			sprintf(buffer_out,"%f %f\r",latitude,longitude);
 			UART->SendString((uint8_t*)buffer_out);
+			valid = true;
 		}
 		case 6:{ //T
 			Gps->SetOrigin();
+			valid = true;
 		}
 
 		default:
@@ -135,7 +141,7 @@ public:
 		}
 
 		UART->ClearBuffer();
-
+		return valid;
 	}
 
 
