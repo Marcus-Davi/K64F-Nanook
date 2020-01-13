@@ -132,6 +132,7 @@ int main(void) {
     Motor.SetMode(MotorController::StopMotor);
     Motor.SetMode(MotorController::ClosedLoop);
 
+
     while(1){
 
     	if( Commands::Parse() )//verifica o buffer por comandos BLUETOOTH
