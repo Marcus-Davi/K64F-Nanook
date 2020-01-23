@@ -48,6 +48,8 @@ private:
 	void DriverCommand(float u_right, float u_left);
 	int32_t GetRightDelta();
 	int32_t GetLeftDelta();
+	uint32_t Timeout; //Contagens
+	uint32_t Timeout_timer = 100; //Assumindo 100 Hz, 1s de watchdog
 
 public:
 
@@ -73,6 +75,13 @@ public:
 
 	void LoopPID();
 	void Stop();
+
+
+	//Timeout
+	void SetTimeout(uint32_t timeout);
+	void TimerTick();
+	void ClearTimer();
+	bool TimerOverflow();
 };
 
 #endif /* MOTORCONTROLLER_H_ */

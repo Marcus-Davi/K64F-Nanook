@@ -67,7 +67,7 @@ void PIT_0_IRQHANDLER(){ //100Hz -> Cálculo da velocidade dos motores
 	MOTOR_PTR->ComputeSpeed();
 
 
-	if(MOTOR_PTR->Status == MotorController::StopMotor)
+	if(MOTOR_PTR->Status == MotorController::StopMotor || MOTOR_PTR->TimerOverflow())
 		MOTOR_PTR->Stop();//(MOTOR_PTR->*Action)();
 	else
 		MOTOR_PTR->LoopPID();
@@ -76,6 +76,7 @@ void PIT_0_IRQHANDLER(){ //100Hz -> Cálculo da velocidade dos motores
 	MOTOR_PTR->Encoder.Count_Right_Old = MOTOR_PTR->Encoder.Count_Right;
 	MOTOR_PTR->Encoder.Count_Left_Old = MOTOR_PTR->Encoder.Count_Left;
 
+	MOTOR_PTR->TimerTick(); // "Watchdog"
 }
 
 void PIT_1_IRQHANDLER(){ //10Hz -> Uso Geral

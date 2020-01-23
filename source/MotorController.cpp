@@ -125,3 +125,23 @@ void MotorController::Stop(){
 	DriverCommand(0,0);
 }
 
+//Timeout
+
+void MotorController::TimerTick(){
+	Timeout_timer++;
+}
+
+void MotorController::SetTimeout(uint32_t timeout){
+	Timeout = timeout;
+}
+
+void MotorController::ClearTimer(){
+	Timeout_timer = 0;
+}
+
+bool MotorController::TimerOverflow(){
+	if(Timeout_timer > Timeout)
+		return true;
+	return false;
+}
+

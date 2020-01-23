@@ -108,6 +108,7 @@ public:
 			token = strchr((char*)Buffer, (char)','); //procura a virgula
 			Ve = (atoi((char*) ++token));
 			Motor->SetSpeedReference((float) Vd, (float)Ve);
+			Motor->ClearTimer(); //Reseta "Watchdog"
 			valid = true;
 			break;
 
