@@ -48,8 +48,8 @@ private:
 	void DriverCommand(float u_right, float u_left);
 	int32_t GetRightDelta();
 	int32_t GetLeftDelta();
-	uint32_t Timeout; //Contagens
-	uint32_t Timeout_timer = 100; //Assumindo 100 Hz, 1s de watchdog
+	uint32_t Timeout = 100; //Contagens
+	uint32_t Timeout_timer = 0; //Assumindo 100 Hz, 1s de watchdog
 
 public:
 
