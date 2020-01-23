@@ -19,7 +19,7 @@
 #define MOTOR_CONTROL_FREQUENCY_HZ 100
 #define MOTOR_CONTROL_SAMPLING_TIME 1/MOTOR_CONTROL_FREQUENCY_HZ
 #define ENCODER_RIGHT_ADJUST 0.4137 // Ajuste do encoder direito | old = 0.4137
-#define ENCODER_LEFT_ADJUST 0.42	// Ajuste do encoder esquerdo | old = 0.4151
+#define ENCODER_LEFT_ADJUST 0.425	// Ajuste do encoder esquerdo | old = 0.4151
 #define ENCODER_PPR 32750
 
 class MotorController {
