@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include "fsl_uart.h"
 
+
+// PI Parameters. Projetado Via MATLAB
 #define KpRight 0.001754f
 #define KiRight 0.3508f
 #define KpLeft 0.00179f
@@ -18,8 +20,8 @@
 
 #define MOTOR_CONTROL_FREQUENCY_HZ 100
 #define MOTOR_CONTROL_SAMPLING_TIME 1/MOTOR_CONTROL_FREQUENCY_HZ
-#define ENCODER_RIGHT_ADJUST 0.4137 // Ajuste do encoder direito | old = 0.4137
-#define ENCODER_LEFT_ADJUST 0.425	// Ajuste do encoder esquerdo | old = 0.4151
+#define ENCODER_RIGHT_ADJUST 1 // Ajustado 24/01/2020
+#define ENCODER_LEFT_ADJUST 1	// Ajustado 24/01/2020
 #define ENCODER_PPR 32750
 
 class MotorController {
@@ -43,6 +45,12 @@ private:
 
 		const float A_Left = KpLeft;
 		const float  B_Left = KiLeft*MOTOR_CONTROL_SAMPLING_TIME - KpLeft;
+
+//		float u_d_k1 = 0; //uk1 direito
+//		float e_d_k1 = 0; //ek1 direito
+//		float u_e_k1 = 0;  //uk1 esquerdo
+//		float e_e_k1 = 0; //ek1 esquerdo
+
 	} PID;
 
 	void DriverCommand(float u_right, float u_left);
@@ -77,7 +85,7 @@ public:
 	void Stop();
 
 
-	//Timeout
+	//Watchdog Timeout
 	void SetTimeout(uint32_t timeout);
 	void TimerTick();
 	void ClearTimer();
