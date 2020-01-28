@@ -104,8 +104,12 @@ void MotorController::LoopPID(){
 void MotorController::ComputeSpeed(){
 	float deltaR = GetRightDelta();
 	float deltaL = GetLeftDelta();
-		SpeedMeasureRPM.Right = ENCODER_RIGHT_ADJUST * (deltaR * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR;
-		SpeedMeasureRPM.Left = ENCODER_LEFT_ADJUST * (deltaL * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR;
+//		SpeedMeasureRPM.Right = ENCODER_RIGHT_ADJUST * (deltaR * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR;
+//		SpeedMeasureRPM.Left = ENCODER_LEFT_ADJUST * (deltaL * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR;
+
+	//Atualizado 28/01/2020
+	SpeedMeasureRPM.Right = (ENCODER_RIGHT_ADJUST_B1 * (deltaR * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR) + ENCODER_RIGHT_ADJUST_B0;
+	SpeedMeasureRPM.Left = (ENCODER_LEFT_ADJUST_B1 * (deltaL * 60.0 * MOTOR_CONTROL_FREQUENCY_HZ) / ENCODER_PPR) + ENCODER_LEFT_ADJUST_B0;
 }
 
 float MotorController::GetSpeed(Side side){
