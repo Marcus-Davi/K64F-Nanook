@@ -68,8 +68,8 @@ void PIT_0_IRQHANDLER(){ //100Hz -> Cálculo da velocidade dos motores
 
 
 
-	if(MOTOR_PTR->Status == MotorController::StopMotor)
-//	if(MOTOR_PTR->Status == MotorController::StopMotor || MOTOR_PTR->TimerOverflow())
+//	if(MOTOR_PTR->Status == MotorController::StopMotor)
+	if(MOTOR_PTR->Status == MotorController::StopMotor || MOTOR_PTR->TimerOverflow())
 		MOTOR_PTR->Stop();//(MOTOR_PTR->*Action)();
 	else
 		MOTOR_PTR->LoopPID();
