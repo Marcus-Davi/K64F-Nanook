@@ -1015,7 +1015,7 @@
             <component name="system" uuid="1f09a1fc-1057-47b0-8c60-83a5acefd085" type_id="system">
                <config_set_global name="global_system_definitions"/>
             </component>
-            <component name="msg" uuid="cced35a5-b299-4c6e-af1d-985c08fc4103" type_id="msg_6e2baaf3b97dbeef01c0043275f9a0e7">
+            <component name="msg" uuid="c8c7dc67-066f-4482-b511-255410d1d670" type_id="msg_6e2baaf3b97dbeef01c0043275f9a0e7">
                <config_set_global name="global_messages"/>
             </component>
          </components>

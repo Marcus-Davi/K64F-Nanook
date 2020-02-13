@@ -6,14 +6,15 @@
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Peripherals v6.0
+product: Peripherals v7.0
 processor: MK64FN1M0xxx12
 package_id: MK64FN1M0VLL12
 mcu_data: ksdk2_0
-processor_version: 6.0.1
+processor_version: 7.0.1
 board: FRDM-K64F
 functionalGroups:
 - name: BOARD_InitPeripherals
+  UUID: 7446c68f-aef7-4e40-b4d4-8fd1cf4f89d8
   called_from_default_init: true
   selectedCore: core0
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -42,6 +43,36 @@ component:
  * BOARD_InitPeripherals functional group
  **********************************************************************************************************************/
 /***********************************************************************************************************************
+ * GPIO_A initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'GPIO_A'
+- type: 'gpio'
+- mode: 'GPIO'
+- custom_name_enabled: 'true'
+- type_id: 'gpio_f970a92e447fa4793838db25a2947ed7'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'GPIOA'
+- config_sets:
+  - fsl_gpio:
+    - enable_irq: 'true'
+    - port_interrupt:
+      - IRQn: 'PORTA_IRQn'
+      - enable_priority: 'false'
+      - priority: '0'
+      - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+void GPIO_A_init(void) {
+  /* Make sure, the clock gate for port A is enabled (e. g. in pin_mux.c) */
+  /* Enable interrupt PORTA_IRQn request in the NVIC */
+  EnableIRQ(PORTA_IRQn);
+}
+
+/***********************************************************************************************************************
  * GPIO_B initialization code
  **********************************************************************************************************************/
 /* clang-format off */
@@ -50,6 +81,7 @@ instance:
 - name: 'GPIO_B'
 - type: 'gpio'
 - mode: 'GPIO'
+- custom_name_enabled: 'true'
 - type_id: 'gpio_f970a92e447fa4793838db25a2947ed7'
 - functional_group: 'BOARD_InitPeripherals'
 - peripheral: 'GPIOB'
@@ -81,6 +113,7 @@ instance:
 - name: 'GPIO_C'
 - type: 'gpio'
 - mode: 'GPIO'
+- custom_name_enabled: 'true'
 - type_id: 'gpio_f970a92e447fa4793838db25a2947ed7'
 - functional_group: 'BOARD_InitPeripherals'
 - peripheral: 'GPIOC'
@@ -104,106 +137,40 @@ void GPIO_C_init(void) {
 }
 
 /***********************************************************************************************************************
- * UART_USB initialization code
+ * I2C_1 initialization code
  **********************************************************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 instance:
-- name: 'UART_USB'
-- type: 'uart'
-- mode: 'interrupts'
-- type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
+- name: 'I2C_1'
+- type: 'i2c'
+- mode: 'I2C_Polling'
+- custom_name_enabled: 'true'
+- type_id: 'i2c_2566d7363e7e9aaedabb432110e372d7'
 - functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'UART0'
+- peripheral: 'I2C1'
 - config_sets:
-  - uartConfig_t:
-    - uartConfig:
-      - clockSource: 'BusInterfaceClock'
-      - clockSourceFreq: 'GetFreq'
-      - baudRate_Bps: '115200'
-      - parityMode: 'kUART_ParityDisabled'
-      - stopBitCount: 'kUART_OneStopBit'
-      - txFifoWatermark: '0'
-      - rxFifoWatermark: '1'
-      - idleType: 'kUART_IdleTypeStartBit'
-      - enableTx: 'true'
-      - enableRx: 'true'
-    - quick_selection: 'QuickSelection1'
-  - interruptsCfg:
-    - interrupts: 'kUART_RxDataRegFullInterruptEnable'
-    - interrupt_vectors:
-      - enable_rx_tx_irq: 'true'
-      - interrupt_rx_tx:
-        - IRQn: 'UART0_RX_TX_IRQn'
-        - enable_priority: 'false'
-        - priority: '0'
-        - enable_custom_name: 'false'
-      - enable_err_irq: 'false'
-      - interrupt_err:
-        - IRQn: 'UART0_ERR_IRQn'
-        - enable_priority: 'false'
-        - priority: '0'
-        - enable_custom_name: 'false'
+  - fsl_i2c:
+    - i2c_mode: 'kI2C_Master'
+    - clockSource: 'BusInterfaceClock'
+    - clockSourceFreq: 'GetFreq'
+    - i2c_master_config:
+      - enableMaster: 'true'
+      - enableStopHold: 'false'
+      - baudRate_Bps: '350000'
+      - glitchFilterWidth: '0'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
-const uart_config_t UART_USB_config = {
-  .baudRate_Bps = 115200,
-  .parityMode = kUART_ParityDisabled,
-  .stopBitCount = kUART_OneStopBit,
-  .txFifoWatermark = 0,
-  .rxFifoWatermark = 1,
-  .idleType = kUART_IdleTypeStartBit,
-  .enableTx = true,
-  .enableRx = true
+const i2c_master_config_t I2C_1_config = {
+  .enableMaster = true,
+  .enableStopHold = false,
+  .baudRate_Bps = 350000,
+  .glitchFilterWidth = 0
 };
 
-void UART_USB_init(void) {
-  UART_Init(UART_USB_PERIPHERAL, &UART_USB_config, UART_USB_CLOCK_SOURCE);
-  UART_EnableInterrupts(UART_USB_PERIPHERAL, kUART_RxDataRegFullInterruptEnable);
-  /* Enable interrupt UART0_RX_TX_IRQn request in the NVIC */
-  EnableIRQ(UART_USB_SERIAL_RX_TX_IRQN);
-}
-
-/***********************************************************************************************************************
- * UART_DRIVER initialization code
- **********************************************************************************************************************/
-/* clang-format off */
-/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
-instance:
-- name: 'UART_DRIVER'
-- type: 'uart'
-- mode: 'polling'
-- type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
-- functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'UART1'
-- config_sets:
-  - uartConfig_t:
-    - uartConfig:
-      - clockSource: 'BusInterfaceClock'
-      - clockSourceFreq: 'GetFreq'
-      - baudRate_Bps: '9600'
-      - parityMode: 'kUART_ParityDisabled'
-      - stopBitCount: 'kUART_OneStopBit'
-      - txFifoWatermark: '0'
-      - rxFifoWatermark: '1'
-      - idleType: 'kUART_IdleTypeStartBit'
-      - enableTx: 'true'
-      - enableRx: 'true'
- * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
-/* clang-format on */
-const uart_config_t UART_DRIVER_config = {
-  .baudRate_Bps = 9600,
-  .parityMode = kUART_ParityDisabled,
-  .stopBitCount = kUART_OneStopBit,
-  .txFifoWatermark = 0,
-  .rxFifoWatermark = 1,
-  .idleType = kUART_IdleTypeStartBit,
-  .enableTx = true,
-  .enableRx = true
-};
-
-void UART_DRIVER_init(void) {
-  UART_Init(UART_DRIVER_PERIPHERAL, &UART_DRIVER_config, UART_DRIVER_CLOCK_SOURCE);
+void I2C_1_init(void) {
+  /* Initialization function */
+  I2C_MasterInit(I2C_1_PERIPHERAL, &I2C_1_config, I2C_1_CLK_FREQ);
 }
 
 /***********************************************************************************************************************
@@ -215,6 +182,7 @@ instance:
 - name: 'PIT'
 - type: 'pit'
 - mode: 'LPTMR_GENERAL'
+- custom_name_enabled: 'true'
 - type_id: 'pit_a4782ba5223c8a2527ba91aeb2bc4159'
 - functional_group: 'BOARD_InitPeripherals'
 - peripheral: 'PIT'
@@ -226,6 +194,7 @@ instance:
       - clockSourceFreq: 'BOARD_BootClockRUN'
     - channels:
       - 0:
+        - channel_id: ''
         - channelNumber: '0'
         - enableChain: 'false'
         - timerPeriod: '100Hz'
@@ -237,6 +206,7 @@ instance:
           - priority: '0'
           - enable_custom_name: 'false'
       - 1:
+        - channel_id: ''
         - channelNumber: '1'
         - enableChain: 'false'
         - timerPeriod: '10Hz'
@@ -248,6 +218,7 @@ instance:
           - priority: '0'
           - enable_custom_name: 'false'
       - 2:
+        - channel_id: ''
         - channelNumber: '2'
         - enableChain: 'false'
         - timerPeriod: '1000Hz'
@@ -268,23 +239,23 @@ void PIT_init(void) {
   /* Initialize the PIT. */
   PIT_Init(PIT_PERIPHERAL, &PIT_config);
   /* Set channel 0 period to 10 ms (600000 ticks). */
-  PIT_SetTimerPeriod(PIT_PERIPHERAL, kPIT_Chnl_0, PIT_0_TICKS);
+  PIT_SetTimerPeriod(PIT_PERIPHERAL, PIT_0, PIT_0_TICKS);
   /* Set channel 1 period to 100 ms (6000000 ticks). */
-  PIT_SetTimerPeriod(PIT_PERIPHERAL, kPIT_Chnl_1, PIT_1_TICKS);
+  PIT_SetTimerPeriod(PIT_PERIPHERAL, PIT_1, PIT_1_TICKS);
   /* Set channel 2 period to 1 ms (60000 ticks). */
-  PIT_SetTimerPeriod(PIT_PERIPHERAL, kPIT_Chnl_2, PIT_2_TICKS);
+  PIT_SetTimerPeriod(PIT_PERIPHERAL, PIT_2, PIT_2_TICKS);
   /* Enable interrupts from channel 0. */
-  PIT_EnableInterrupts(PIT_PERIPHERAL, kPIT_Chnl_0, kPIT_TimerInterruptEnable);
+  PIT_EnableInterrupts(PIT_PERIPHERAL, PIT_0, kPIT_TimerInterruptEnable);
   /* Enable interrupts from channel 1. */
-  PIT_EnableInterrupts(PIT_PERIPHERAL, kPIT_Chnl_1, kPIT_TimerInterruptEnable);
+  PIT_EnableInterrupts(PIT_PERIPHERAL, PIT_1, kPIT_TimerInterruptEnable);
   /* Enable interrupt PIT_0_IRQN request in the NVIC */
   EnableIRQ(PIT_0_IRQN);
   /* Enable interrupt PIT_1_IRQN request in the NVIC */
   EnableIRQ(PIT_1_IRQN);
   /* Start channel 0. */
-  PIT_StartTimer(PIT_PERIPHERAL, kPIT_Chnl_0);
+  PIT_StartTimer(PIT_PERIPHERAL, PIT_0);
   /* Start channel 1. */
-  PIT_StartTimer(PIT_PERIPHERAL, kPIT_Chnl_1);
+  PIT_StartTimer(PIT_PERIPHERAL, PIT_1);
 }
 
 /***********************************************************************************************************************
@@ -296,6 +267,7 @@ instance:
 - name: 'UART_BT'
 - type: 'uart'
 - mode: 'interrupts'
+- custom_name_enabled: 'true'
 - type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
 - functional_group: 'BOARD_InitPeripherals'
 - peripheral: 'UART4'
@@ -350,68 +322,46 @@ void UART_BT_init(void) {
 }
 
 /***********************************************************************************************************************
- * I2C_1 initialization code
+ * UART_DRIVER initialization code
  **********************************************************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 instance:
-- name: 'I2C_1'
-- type: 'i2c'
-- mode: 'I2C_Polling'
-- type_id: 'i2c_2566d7363e7e9aaedabb432110e372d7'
+- name: 'UART_DRIVER'
+- type: 'uart'
+- mode: 'polling'
+- custom_name_enabled: 'true'
+- type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
 - functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'I2C1'
+- peripheral: 'UART1'
 - config_sets:
-  - fsl_i2c:
-    - i2c_mode: 'kI2C_Master'
-    - clockSource: 'BusInterfaceClock'
-    - clockSourceFreq: 'GetFreq'
-    - i2c_master_config:
-      - enableMaster: 'true'
-      - enableStopHold: 'false'
-      - baudRate_Bps: '350000'
-      - glitchFilterWidth: '0'
+  - uartConfig_t:
+    - uartConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+      - baudRate_Bps: '9600'
+      - parityMode: 'kUART_ParityDisabled'
+      - stopBitCount: 'kUART_OneStopBit'
+      - txFifoWatermark: '0'
+      - rxFifoWatermark: '1'
+      - idleType: 'kUART_IdleTypeStartBit'
+      - enableTx: 'true'
+      - enableRx: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
-const i2c_master_config_t I2C_1_config = {
-  .enableMaster = true,
-  .enableStopHold = false,
-  .baudRate_Bps = 350000,
-  .glitchFilterWidth = 0
+const uart_config_t UART_DRIVER_config = {
+  .baudRate_Bps = 9600,
+  .parityMode = kUART_ParityDisabled,
+  .stopBitCount = kUART_OneStopBit,
+  .txFifoWatermark = 0,
+  .rxFifoWatermark = 1,
+  .idleType = kUART_IdleTypeStartBit,
+  .enableTx = true,
+  .enableRx = true
 };
 
-void I2C_1_init(void) {
-  /* Initialization function */
-  I2C_MasterInit(I2C_1_PERIPHERAL, &I2C_1_config, I2C_1_CLK_FREQ);
-}
-
-/***********************************************************************************************************************
- * GPIO_A initialization code
- **********************************************************************************************************************/
-/* clang-format off */
-/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
-instance:
-- name: 'GPIO_A'
-- type: 'gpio'
-- mode: 'GPIO'
-- type_id: 'gpio_f970a92e447fa4793838db25a2947ed7'
-- functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'GPIOA'
-- config_sets:
-  - fsl_gpio:
-    - enable_irq: 'true'
-    - port_interrupt:
-      - IRQn: 'PORTA_IRQn'
-      - enable_priority: 'false'
-      - priority: '0'
-      - enable_custom_name: 'false'
- * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
-/* clang-format on */
-
-void GPIO_A_init(void) {
-  /* Make sure, the clock gate for port A is enabled (e. g. in pin_mux.c) */
-  /* Enable interrupt PORTA_IRQn request in the NVIC */
-  EnableIRQ(PORTA_IRQn);
+void UART_DRIVER_init(void) {
+  UART_Init(UART_DRIVER_PERIPHERAL, &UART_DRIVER_config, UART_DRIVER_CLOCK_SOURCE);
 }
 
 /***********************************************************************************************************************
@@ -423,6 +373,7 @@ instance:
 - name: 'UART_GPS'
 - type: 'uart'
 - mode: 'interrupts'
+- custom_name_enabled: 'true'
 - type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
 - functional_group: 'BOARD_InitPeripherals'
 - peripheral: 'UART3'
@@ -475,20 +426,82 @@ void UART_GPS_init(void) {
 }
 
 /***********************************************************************************************************************
+ * UART_USB initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'UART_USB'
+- type: 'uart'
+- mode: 'interrupts'
+- custom_name_enabled: 'true'
+- type_id: 'uart_cd31a12aa8c79051fda42cc851a27c37'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'UART0'
+- config_sets:
+  - uartConfig_t:
+    - uartConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+      - baudRate_Bps: '115200'
+      - parityMode: 'kUART_ParityDisabled'
+      - stopBitCount: 'kUART_OneStopBit'
+      - txFifoWatermark: '0'
+      - rxFifoWatermark: '1'
+      - idleType: 'kUART_IdleTypeStartBit'
+      - enableTx: 'true'
+      - enableRx: 'true'
+    - quick_selection: 'QuickSelection1'
+  - interruptsCfg:
+    - interrupts: 'kUART_RxDataRegFullInterruptEnable'
+    - interrupt_vectors:
+      - enable_rx_tx_irq: 'true'
+      - interrupt_rx_tx:
+        - IRQn: 'UART0_RX_TX_IRQn'
+        - enable_priority: 'false'
+        - priority: '0'
+        - enable_custom_name: 'false'
+      - enable_err_irq: 'false'
+      - interrupt_err:
+        - IRQn: 'UART0_ERR_IRQn'
+        - enable_priority: 'false'
+        - priority: '0'
+        - enable_custom_name: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const uart_config_t UART_USB_config = {
+  .baudRate_Bps = 115200,
+  .parityMode = kUART_ParityDisabled,
+  .stopBitCount = kUART_OneStopBit,
+  .txFifoWatermark = 0,
+  .rxFifoWatermark = 1,
+  .idleType = kUART_IdleTypeStartBit,
+  .enableTx = true,
+  .enableRx = true
+};
+
+void UART_USB_init(void) {
+  UART_Init(UART_USB_PERIPHERAL, &UART_USB_config, UART_USB_CLOCK_SOURCE);
+  UART_EnableInterrupts(UART_USB_PERIPHERAL, kUART_RxDataRegFullInterruptEnable);
+  /* Enable interrupt UART0_RX_TX_IRQn request in the NVIC */
+  EnableIRQ(UART_USB_SERIAL_RX_TX_IRQN);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
 {
   /* Initialize components */
+  GPIO_A_init();
   GPIO_B_init();
   GPIO_C_init();
-  UART_USB_init();
-  UART_DRIVER_init();
+  I2C_1_init();
   PIT_init();
   UART_BT_init();
-  I2C_1_init();
-  GPIO_A_init();
+  UART_DRIVER_init();
   UART_GPS_init();
+  UART_USB_init();
 }
 
 /***********************************************************************************************************************
