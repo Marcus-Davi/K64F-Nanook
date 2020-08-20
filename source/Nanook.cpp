@@ -52,8 +52,8 @@
 
 #include "Quaternion.h"
 
-void Quaternion::Print(){
-	PRINTF("%f %f %f %f\r\n",w,v.x,v.y,v.z);
+void Quaternion::Print(const Quaternion& q){
+	PRINTF("%f %f %f %f\r\n",q.w,q.v.x,q.v.y,q.v.z);
 }
 
 void Vec3::Print(){
@@ -107,7 +107,7 @@ int main(void) {
     BOARD_InitDebugConsole();
 
 
-    Commands::SetUart(&USB_Uart); //BT_UART!
+    Commands::SetUart(&BT_Uart); //BT_UART!
     Commands::SetMotor(&Motor);
     Commands::SetGPS(&Gps);
     Commands::SetIMU(&Imu);
@@ -132,25 +132,28 @@ int main(void) {
     Motor.SetMode(MotorController::StopMotor);
     Motor.SetMode(MotorController::ClosedLoop);
 
+    bool uartSwitch;
+
 
     while(1){
 
-    	if( Commands::Parse() )//verifica o buffer por comandos BLUETOOTH
-    	LED_GREEN_TOGGLE();
+    	if(uartSwitch){
+    		Commands::SetUart(&BT_Uart);
 
-//    	if(Gps.WaitData() == true){
-//    		sprintf(string,(char*)GPS_Uart.GetBuffer());
-//
-//    		if(Gps.GetLatLong() == true){
-//    			x = Gps.GetX();
-//    			y = Gps.GetY();
-//    			sprintf(string,"x = %f y = %f\n\r",x,y);
-//
-//    	}
-//       		BT_Uart.SendString((uint8_t*)string);
-//       		PRINTF("%s",string);
-//    }
+    	} else {
+    		Commands::SetUart(&USB_Uart);
+    	}
+
+    	uartSwitch = !uartSwitch; // Muda a UART
+
+    	if (Commands::Parse() ){
+    		LED_GREEN_TOGGLE();
+    	}
+
+
+
     }
+
 
     return 0;
 }

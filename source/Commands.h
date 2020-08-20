@@ -54,7 +54,7 @@ public:
 		char* Pt;
 		int k;
 		bool valid = false;
-		static uint8_t* Buffer = UART->GetBuffer();
+		uint8_t* Buffer = UART->GetBuffer();
 
 		//Please make sure terminator is asserted.
 
